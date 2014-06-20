@@ -35,332 +35,332 @@ import android.widget.Toast;
 
 public class AgendaTelefonica extends ListActivity 
 {
-   private static String TAG = AgendaTelefonica.class.getName();
-   
-   // unique app UUID generated at http://www.guidgenerator.com/
-   public static final UUID MY_UUID = 
-      UUID.fromString("6acc0a73-afc3-4483-a3a8-94be2c0dfc52");
-   
-   // name of this service for service discovery
-   private static final String NAME = "AgendaTelefonicaBluetooth";
+	private static String TAG = AgendaTelefonica.class.getName();
 
-   // constants passed to startActivityForResult 
-   private static final int ENABLE_BLUETOOTH = 1; 
-   private static final int REQUEST_DISCOVERABILITY = 2; 
+	// Unique UUID app gerado pelo http://www.guidgenerator.com/ 
+	public static final UUID MY_UUID = 
+			UUID.fromString("6acc0a73-afc3-4483-a3a8-94be2c0dfc52");
 
-   // BluetoothAdapter provides access to Bluetooth capabilities
-   private BluetoothAdapter bluetoothAdapter = null; 
-   private boolean userAllowedBluetooth = true;
-   private Handler handler; // for displaying Toasts from non-GUI threads
-   
-   public static final String ROW_ID = "row_id"; // Intent extra key
-   private ListView contactListView; // the ListActivity's ListView
-   private CursorAdapter contactAdapter; // adapter for ListView
-      
-   // called when the activity is first created
-   @Override
-   public void onCreate(Bundle savedInstanceState) 
-   {
-      super.onCreate(savedInstanceState); // call super's onCreate
-      contactListView = getListView(); // get the built-in ListView
-      contactListView.setOnItemClickListener(viewContactListener);      
+	// Nome do serviço para descoberta de serviços 
+	private static final String NAME = "AgendaTelefonicaBluetooth";
 
-      // map each contact's name to a TextView in the ListView layout
-      String[] from = new String[] { "name" };
-      int[] to = new int[] { R.id.contactTextView };
-      contactAdapter = new SimpleCursorAdapter(
-         AgendaTelefonica.this, R.layout.contact_list_item, null, from, to);
-      setListAdapter(contactAdapter); // set contactView's adapter
-      
-      // get the default Bluetooth adapter
-      bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-      
-      handler = new Handler(); // for displaying Toasts in GUI thread
-   } // end method onCreate
-   
-   // called when this Activity returns from the background
-   @Override
-   protected void onResume() 
-   {
-      super.onResume(); // call super's onResume method
+	// Constantes passados ​​para startActivityForResult 
+	private static final int ENABLE_BLUETOOTH = 1; 
+	private static final int REQUEST_DISCOVERABILITY = 2; 
 
-      // request that Bluetooth be enabled if it isn't already
-      if (!bluetoothAdapter.isEnabled() && userAllowedBluetooth) 
-      {
-         // create and start Intent to ask user to enable Bluetooth
-         Intent enableBluetoothIntent = new Intent(
-            BluetoothAdapter.ACTION_REQUEST_ENABLE);
-         startActivityForResult(enableBluetoothIntent, 
-            ENABLE_BLUETOOTH);
-      } // end if
-      
-      // create new GetContactsTask and execute it 
-      new GetContactsTask().execute((Object[]) null);
-   } // end method onResume
-   
-   // when this Activity is stopped, deactivate Cursor for ListView
-   @Override
-   protected void onStop() 
-   {
-      Cursor cursor = contactAdapter.getCursor(); // get current Cursor
-      
-      if (cursor != null) 
-         cursor.deactivate(); // deactivate it
-      
-      contactAdapter.changeCursor(null); // adapted now has no Cursor
-      super.onStop();
-   } // end method onStop
+	// BluetoothAdapter fornece acesso a recursos Bluetooth 
+	private BluetoothAdapter bluetoothAdapter = null; 
+	private boolean userAllowedBluetooth = true;
+	private Handler handler; // Para a exibição de Toasts de tópicos não-GUI 
 
-   // performs database query outside GUI thread
-   private class GetContactsTask extends AsyncTask<Object, Object, Cursor> 
-   {
-      DatabaseConnector databaseConnector = 
-         new DatabaseConnector(AgendaTelefonica.this);
+	public static final String ROW_ID = "row_id"; // Chave extra Intenção 
+	private ListView contactListView; // ListView do ListActivity
+	private CursorAdapter contactAdapter; // Adaptador para ListView
 
-      // perform the database access
-      @Override
-      protected Cursor doInBackground(Object... params)
-      {
-         databaseConnector.open();
+	// Chamado quando a atividade é criada pela primeira vez 
+	@Override
+	public void onCreate(Bundle savedInstanceState) 
+	{
+		super.onCreate(savedInstanceState); // Chama de super do onCreate 
+		contactListView = getListView(); // Obtém o ListView embutido 
+		contactListView.setOnItemClickListener(viewContactListener);      
 
-         // get a cursor containing call contacts
-         return databaseConnector.getAllContacts(); 
-      } // end method doInBackground
+		// Mapear o nome de cada contato a um TextView no layout ListView 
+		String[] from = new String[] { "name" };
+		int[] to = new int[] { R.id.contactTextView };
+		contactAdapter = new SimpleCursorAdapter(
+				AgendaTelefonica.this, R.layout.contact_list_item, null, from, to);
+		setListAdapter(contactAdapter); // Definir adaptador de ContactView
 
-      // use the Cursor returned from the doInBackground method
-      @Override
-      protected void onPostExecute(Cursor result)
-      {
-         contactAdapter.changeCursor(result); // set the adapter's Cursor
-         databaseConnector.close();
-      } // end method onPostExecute
-   } // end class GetContactsTask
-      
-   // create the Activity's menu from a menu resource XML file
-   @Override
-   public boolean onCreateOptionsMenu(Menu menu) 
-   {
-      super.onCreateOptionsMenu(menu);
-      MenuInflater inflater = getMenuInflater();
-      inflater.inflate(R.menu.agendatelefonica_menu, menu);
-      return true;
-   } // end method onCreateOptionsMenu
-   
-   // handle choice from options menu
-   @Override
-   public boolean onOptionsItemSelected(MenuItem item) 
-   {
-      switch (item.getItemId())
-      {
-         case R.id.addContactItem: 
-            // create a new Intent to launch the AddEditContact Activity
-            Intent addNewContact = 
-               new Intent(AgendaTelefonica.this, AddEditContact.class);
-            startActivity(addNewContact); // start AddEditContact Activity
-            break;
-         case R.id.receiveContactItem:
-            if (bluetoothAdapter.isEnabled())
-            {
-               // launch Intent to request discoverability for 120 seconds
-               Intent requestDiscoverabilityIntent = new Intent(
-                  BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-               startActivityForResult(requestDiscoverabilityIntent, 
-                  REQUEST_DISCOVERABILITY);
-            } // end if
-            else // user did not allow Bluetooth adapter to be enabled
-            {
-               Toast.makeText(this, 
-                  R.string.no_bluetooth,
-                  Toast.LENGTH_LONG).show();
-            } // end else
-            break;
-      } // end switch
-      
-      return super.onOptionsItemSelected(item); // call super's method
-   } // end method onOptionsItemSelected
-   
-   // event listener that responds to the user 
-   // touching a contact's name in the ListView
-   OnItemClickListener viewContactListener = new OnItemClickListener() 
-   {
-      @Override
-      public void onItemClick(AdapterView<?> parent, View view, int id,
-         long position) 
-      {
-         // create an Intent to launch the ViewContact Activity
-         Intent viewContact = 
-            new Intent(AgendaTelefonica.this, ViewContact.class);
-         
-         // pass the selected contact's row ID as an extra with the Intent
-         viewContact.putExtra(ROW_ID, position);
-         startActivity(viewContact); // start the ViewContact Activity
-      } // end method onItemClick
-   }; // end viewContactListener
-   
-   // called with result of startActivityForResult
-   @Override
-   protected void onActivityResult(int requestCode, int resultCode,
-      Intent data)
-   {
-      super.onActivityResult(requestCode, resultCode, data);
+		// Obtém o adaptador Bluetooth padrão 
+		bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-      switch (requestCode) // process result based on the requestCode
-      {
-         case ENABLE_BLUETOOTH: // attempted to enable Bluetooth
-            if (resultCode == RESULT_OK) // bluetooth was enabled
-            {
-               Toast.makeText(this, 
-                  R.string.bluetooth_enabled,
-                  Toast.LENGTH_LONG).show();               
-            } // end if 
-            else // Bluetooth was not enabled
-            {
-               userAllowedBluetooth = false;
-               Toast.makeText(this, R.string.no_bluetooth,
-                  Toast.LENGTH_LONG).show();               
-            } // end else
-            break;
-         // attempted to make the device discoverable 
-         case REQUEST_DISCOVERABILITY: 
-            if (resultCode != RESULT_CANCELED) // user gave permission
-            {
-               listenForContact(); // start listening for a connection
-            } // end if
-            else // user did not allow discoverability
-            {
-               Toast.makeText(this, 
-                  R.string.no_discoverability,
-                  Toast.LENGTH_LONG).show();               
-            } // end else
-            break;
-      } // end switch
-   } // end method onActivityResult
+		handler = new Handler(); // Para a exibição de Toasts no thread de GUI
+	} // Fim do metodo onCreate 
 
-   // start listening for a contact sent from another device
-   private void listenForContact()
-   {
-      // start background task to wait for connection 
-      // and receive a contact
-      ReceiveContactTask task = new ReceiveContactTask();
-      task.execute((Object[]) null);
-   } // end method listenForContact
-   
-   // thread that listens for incoming connection requests
-   private class ReceiveContactTask 
-      extends AsyncTask<Object, Object, Object> 
-   {
-      private BluetoothServerSocket serverSocket; // awaits connection
-      private BluetoothSocket socket; // used to process connection
-      
-      // await connection, receive contact and update contacts list
-      @Override
-      protected Object doInBackground(Object... params)
-      {
-         try
-         {
-            // get BluetoothServerSocket from bluetoothAdapter
-            serverSocket = 
-               bluetoothAdapter.listenUsingRfcommWithServiceRecord(
-                  NAME, MY_UUID);
+	// Chamado quando esta atividade retorna do fundo
+	@Override
+	protected void onResume() 
+	{
+		super.onResume(); // Chama o método de super-onResume
 
-            displayToastViaHandler(AgendaTelefonica.this, handler, 
-               R.string.waiting_for_contact);
+		// Solicitar que o Bluetooth esteja ativado, se não é já
+		if (!bluetoothAdapter.isEnabled() && userAllowedBluetooth) 
+		{
+			// Criar e começar a intenção de pedir usuário para ativar o Bluetooth
+			Intent enableBluetoothIntent = new Intent(
+					BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			startActivityForResult(enableBluetoothIntent, 
+					ENABLE_BLUETOOTH);
+		} // Fim do if
 
-            // wait for connection
-            BluetoothSocket socket = serverSocket.accept(); 
-            
-            // get InputStream for receiving contact
-            InputStream inputStream = socket.getInputStream();
-            
-            // create a byte array to hold incoming contact information
-            byte[] buffer = new byte[1024];
-            int bytes; // number of bytes read
-   
-            // read from the InputStream and store data in buffer
-            bytes = inputStream.read(buffer);
-            
-            if (bytes != -1) // a contact was received
-            {
-               DatabaseConnector databaseConnector = null;
-               
-               // convert readMessage to JSONObject
-               try
-               {
-                  // create JSONObject from read bytes
-                  JSONObject contact = 
-                     new JSONObject(new String(buffer, 0, buffer.length));
-                  
-                  // create new DatabaseConnector
-                  databaseConnector = 
-                     new DatabaseConnector(getBaseContext());
-         
-                  // open the database and add the contact to the database
-                  databaseConnector.open(); // connect to the database
-                  
-                  databaseConnector.insertContact( // add the contact
-                     contact.getString("name"), 
-                     contact.getString("email"), 
-                     contact.getString("phone"), 
-                     contact.getString("street"), 
-                     contact.getString("city"));
-      
-                  // update the contacts list
-                  new GetContactsTask().execute((Object[]) null);
-                  displayToastViaHandler(AgendaTelefonica.this, handler, 
-                     R.string.contact_received);
-               } // end try
-               catch (JSONException e) // problem with the JSON formatting
-               {        
-                  displayToastViaHandler(AgendaTelefonica.this, handler, 
-                     R.string.contact_not_received);
-                  Log.e(TAG, e.toString());
-               } // end catch
-               finally // ensure that the database connection is closed
-               {
-                  if (databaseConnector != null)
-                     databaseConnector.close(); // close connection
-               } // end finally
-            } // end if
-         } // end try
-         catch (IOException e) 
-         {            
-            Log.e(TAG, e.toString());
-         } // end catch
-         finally // ensure BluetoothServerSocket & BluetoothSocket closed
-         {
-            try 
-            {
-               // if the BluetoothServerSocket is not null, close it
-               if (serverSocket != null)
-                  serverSocket.close();
-               
-               // if the BluetoothSocket is not null, close it
-               if (socket != null)
-                  socket.close();
-            } // end try
-            catch (IOException e) // problem closing a socket
-            {
-               Log.e(TAG, e.toString());
-            } // end catch
-         } // end finally
-         
-         return null;
-      } // end method doInBackround
-   } // end nested class ReceiveContactTask 
-   
-   // use handler to display a Toast in GUI thread with specified message
-   public static void displayToastViaHandler(final Context context, 
-      Handler handler, final int stringID)
-   {
-      handler.post(
-         new Runnable()
-         {
-            public void run()
-            {
-               Toast.makeText(context, stringID,
-                  Toast.LENGTH_SHORT).show();
-            } // end method run
-         } // end Runnable
-      ); // end call to handler's post method
-   } // end method displayToastViaHandler
-} // end class AgendaTelefonica
+		// Cria novo GetContactsTask e executá-lo
+		new GetContactsTask().execute((Object[]) null);
+	} // Fim do metodo onResume
+
+	// Quando esta atividade é interrompida, desativar Cursor para ListView
+	@Override
+	protected void onStop() 
+	{
+		Cursor cursor = contactAdapter.getCursor(); // Obtém Cursor atual
+
+		if (cursor != null) 
+			cursor.deactivate(); // Desativá-lo
+
+		contactAdapter.changeCursor(null); // Adaptado agora não tem Cursor
+		super.onStop();
+	} // Fim do metodo onStop
+
+	// Realiza consulta de banco de dados fora do thread de GUI
+	private class GetContactsTask extends AsyncTask<Object, Object, Cursor> 
+	{
+		ConexaoBancoDados databaseConnector = 
+				new ConexaoBancoDados(AgendaTelefonica.this);
+
+		// Executar o acesso ao banco
+		@Override
+		protected Cursor doInBackground(Object... params)
+		{
+			databaseConnector.open();
+
+			// Obtém um cursor que contém contatos de chamadas
+			return databaseConnector.getAllContacts(); 
+		} // Fim do metodo doInBackground
+
+		// Usar o cursor retornado do método doInBackground
+		@Override
+		protected void onPostExecute(Cursor result)
+		{
+			contactAdapter.changeCursor(result); // Define o cursor do adaptador
+			databaseConnector.close();
+		} // Fim do metodo onPostExecute
+	} // Fim da classe GetContactsTask
+
+	// Cria o menu da Atividade de um arquivo XML recurso de menu
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) 
+	{
+		super.onCreateOptionsMenu(menu);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.agendatelefonica_menu, menu);
+		return true;
+	} // Fim do metodo onCreateOptionsMenu
+
+	// Controle de escolha de menu de opções
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) 
+	{
+		switch (item.getItemId())
+		{
+		case R.id.addContactItem: 
+			// Cria uma nova intenção de lançar o AdicionarEditarContato Activity
+			Intent addNewContact = 
+			new Intent(AgendaTelefonica.this, AdicionarEditarContato.class);
+			startActivity(addNewContact); // Inicia AdicionarEditarContato Activity
+			break;
+		case R.id.receiveContactItem:
+			if (bluetoothAdapter.isEnabled())
+			{
+				// Lançamento Intenção para solicitar descoberta por 120 segundos
+				Intent requestDiscoverabilityIntent = new Intent(
+						BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+				startActivityForResult(requestDiscoverabilityIntent, 
+						REQUEST_DISCOVERABILITY);
+			} // Fim de if
+			else // Usuário não permitiu adaptador Bluetooth esteja ativado
+			{
+				Toast.makeText(this, 
+						R.string.no_bluetooth,
+						Toast.LENGTH_LONG).show();
+			} // Fim de else
+			break;
+		} // Fim de switch
+
+		return super.onOptionsItemSelected(item); // Chama o metodo de super
+	} // Fim do metodo onOptionsItemSelected
+
+	// Ouvinte evento que responde ao utilizador
+	// Tocar no nome do contato no ListView
+	OnItemClickListener viewContactListener = new OnItemClickListener() 
+	{
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int id,
+				long position) 
+		{
+			// Cria a intenção de lançar a ViewContact Activity
+			Intent viewContact = 
+					new Intent(AgendaTelefonica.this, VisualizacaoContato.class);
+
+			// Passa o contato selecionado linha ID como um extra com a posicao
+			viewContact.putExtra(ROW_ID, position);
+			startActivity(viewContact); //Inicia a ViewContact Activity
+		} // Fim do metodo onItemClick
+	}; // Fim de viewContactListener
+
+	// Chamada com resultado da startActivityForResult
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode,
+			Intent data)
+	{
+		super.onActivityResult(requestCode, resultCode, data);
+
+		switch (requestCode) // Processa resultado baseado na requestCode
+		{
+		case ENABLE_BLUETOOTH: // Tentou ativar Bluetooth
+			if (resultCode == RESULT_OK) // Bluetooth foi ativado
+			{
+				Toast.makeText(this, 
+						R.string.bluetooth_enabled,
+						Toast.LENGTH_LONG).show();               
+			} // Fim de if 
+			else // Bluetooth não foi ativado
+			{
+				userAllowedBluetooth = false;
+				Toast.makeText(this, R.string.no_bluetooth,
+						Toast.LENGTH_LONG).show();               
+			} // Fim de else
+			break;
+			// Tentativa de tornar o dispositivo detectável
+		case REQUEST_DISCOVERABILITY: 
+			if (resultCode != RESULT_CANCELED) // Usuario deu permissao
+			{
+				listenForContact(); //Inicia listening de uma conexao
+			} // Fim de if
+			else // Usuario nao permitiu descoberta
+			{
+				Toast.makeText(this, 
+						R.string.no_discoverability,
+						Toast.LENGTH_LONG).show();               
+			} // Fim de else
+			break;
+		} // Fim de switch
+	} // Fim do metodo onActivityResult
+
+	// Inicia listening de um contacto enviados a partir de outro dispositivo
+	private void listenForContact()
+	{
+		// Inicia tarefa de fundo que esperar por conexao
+		// E receber um contato
+		ReceiveContactTask task = new ReceiveContactTask();
+		task.execute((Object[]) null);
+	} // Fim do metodo listenForContact
+
+	// Thread que escuta as solicitações de conexão de entrada
+	private class ReceiveContactTask 
+	extends AsyncTask<Object, Object, Object> 
+	{
+		private BluetoothServerSocket serverSocket; // Espera por conexão
+		private BluetoothSocket socket; // Usado para processar conexão
+
+		// Aguardar ligação, receber o contato e atualização da lista de contatos
+		@Override
+		protected Object doInBackground(Object... params)
+		{
+			try
+			{
+				// Obtem BluetoothServerSocket de bluetoothAdapter
+				serverSocket = 
+						bluetoothAdapter.listenUsingRfcommWithServiceRecord(
+								NAME, MY_UUID);
+
+				displayToastViaHandler(AgendaTelefonica.this, handler, 
+						R.string.waiting_for_contact);
+
+				// Espera por conexão
+				BluetoothSocket socket = serverSocket.accept(); 
+
+				// Obtém InputStream para receber contato
+				InputStream inputStream = socket.getInputStream();
+
+				// Cria um array de bytes para armazenar informações de contato de entrada
+				byte[] buffer = new byte[1024];
+				int bytes; // Número de bytes lidos
+
+				// Lê a partir do InputStream e armazenar dados em buffer
+				bytes = inputStream.read(buffer);
+
+				if (bytes != -1) // Um contato foi recebido
+				{
+					ConexaoBancoDados databaseConnector = null;
+
+					// Converter ReadMessage para JSONObject
+					try
+					{
+						// Cria JSONObject de bytes de leitura
+						JSONObject contact = 
+								new JSONObject(new String(buffer, 0, buffer.length));
+
+						// Cria novo DatabaseConnector
+						databaseConnector = 
+								new ConexaoBancoDados(getBaseContext());
+
+						// Abre o banco de dados e adicionar o contato à base de dados
+						databaseConnector.open(); // Conecta ao banco de dados
+
+						databaseConnector.insertContact( // Adiciona o contato
+								contact.getString("name"), 
+								contact.getString("email"), 
+								contact.getString("phone"), 
+								contact.getString("street"), 
+								contact.getString("city"));
+
+						// Atualiza a lista de contatos
+						new GetContactsTask().execute((Object[]) null);
+						displayToastViaHandler(AgendaTelefonica.this, handler, 
+								R.string.contact_received);
+					} // Fim de try
+					catch (JSONException e) // Problema com o formato JSON
+					{        
+						displayToastViaHandler(AgendaTelefonica.this, handler, 
+								R.string.contact_not_received);
+						Log.e(TAG, e.toString());
+					} // Fim de catch
+					finally // Assegura que a conexão com o banco está fechado
+					{
+						if (databaseConnector != null)
+							databaseConnector.close(); // Fecha a conexao
+					} // Fim de finally
+				} // Fim de if
+			} // Fim de try
+			catch (IOException e) 
+			{            
+				Log.e(TAG, e.toString());
+			} // Fim de catch
+			finally // Garante que BluetoothServerSocket e BluetoothSocket serao fechados 
+			{
+				try 
+				{
+					// Se o BluetoothServerSocket não é nulo, fechá-lo 
+					if (serverSocket != null)
+						serverSocket.close();
+
+					// Se o BluetoothSocket não é nulo, fechá-lo 
+					if (socket != null)
+						socket.close();
+				} // Fim de try
+				catch (IOException e) // Problema fechando um socket
+				{
+					Log.e(TAG, e.toString());
+				} // Fim de catch
+			} // Fim de finally
+
+			return null;
+		} // Fim do metodo doInBackround
+	} // Fim de classe aninhada ReceiveContactTask 
+
+	//  Handler usado para exibir um Toast em thread GUI com mensagem especificada
+	public static void displayToastViaHandler(final Context context, 
+			Handler handler, final int stringID)
+	{
+		handler.post(
+				new Runnable()
+				{
+					public void run()
+					{
+						Toast.makeText(context, stringID,
+								Toast.LENGTH_SHORT).show();
+					} // Fim do metodo run
+				} // Fim de Runnable
+				); // Fim da chamada do metodo post do handler
+	} // Fim do metodo displayToastViaHandler
+} // Fim da classe AgendaTelefonica

@@ -15,11 +15,11 @@
             <category android:name="android.intent.category.LAUNCHER" />
          </intent-filter>
       </activity>
-      <activity android:name=".AddEditContact" 
+      <activity android:name=".AdicionarEditarContato" 
          android:label="@string/app_name"></activity>
-      <activity android:name=".ViewContact" 
+      <activity android:name=".VisualizacaoContato" 
          android:label="@string/app_name"></activity>
-      <activity android:name=".DeviceChooser" 
+      <activity android:name=".SeletorDispositivo" 
          android:label="@string/app_name"></activity>
    </application>
 </manifest> 
