@@ -1,6 +1,6 @@
-// AddressBook.java
+// AgendaTelefonica.java
 // Main activity for the Address Book app.
-package com.deitel.addressbook;
+package com.agendaTelefonica;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,6 +8,8 @@ import java.util.UUID;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.agendaTelefonica.R;
 
 import android.app.ListActivity;
 import android.bluetooth.BluetoothAdapter;
@@ -31,16 +33,16 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
-public class AddressBook extends ListActivity 
+public class AgendaTelefonica extends ListActivity 
 {
-   private static String TAG = AddressBook.class.getName();
+   private static String TAG = AgendaTelefonica.class.getName();
    
    // unique app UUID generated at http://www.guidgenerator.com/
    public static final UUID MY_UUID = 
       UUID.fromString("6acc0a73-afc3-4483-a3a8-94be2c0dfc52");
    
    // name of this service for service discovery
-   private static final String NAME = "AddressBookBluetooth";
+   private static final String NAME = "AgendaTelefonicaBluetooth";
 
    // constants passed to startActivityForResult 
    private static final int ENABLE_BLUETOOTH = 1; 
@@ -67,7 +69,7 @@ public class AddressBook extends ListActivity
       String[] from = new String[] { "name" };
       int[] to = new int[] { R.id.contactTextView };
       contactAdapter = new SimpleCursorAdapter(
-         AddressBook.this, R.layout.contact_list_item, null, from, to);
+         AgendaTelefonica.this, R.layout.contact_list_item, null, from, to);
       setListAdapter(contactAdapter); // set contactView's adapter
       
       // get the default Bluetooth adapter
@@ -113,7 +115,7 @@ public class AddressBook extends ListActivity
    private class GetContactsTask extends AsyncTask<Object, Object, Cursor> 
    {
       DatabaseConnector databaseConnector = 
-         new DatabaseConnector(AddressBook.this);
+         new DatabaseConnector(AgendaTelefonica.this);
 
       // perform the database access
       @Override
@@ -140,7 +142,7 @@ public class AddressBook extends ListActivity
    {
       super.onCreateOptionsMenu(menu);
       MenuInflater inflater = getMenuInflater();
-      inflater.inflate(R.menu.addressbook_menu, menu);
+      inflater.inflate(R.menu.agendatelefonica_menu, menu);
       return true;
    } // end method onCreateOptionsMenu
    
@@ -153,7 +155,7 @@ public class AddressBook extends ListActivity
          case R.id.addContactItem: 
             // create a new Intent to launch the AddEditContact Activity
             Intent addNewContact = 
-               new Intent(AddressBook.this, AddEditContact.class);
+               new Intent(AgendaTelefonica.this, AddEditContact.class);
             startActivity(addNewContact); // start AddEditContact Activity
             break;
          case R.id.receiveContactItem:
@@ -187,7 +189,7 @@ public class AddressBook extends ListActivity
       {
          // create an Intent to launch the ViewContact Activity
          Intent viewContact = 
-            new Intent(AddressBook.this, ViewContact.class);
+            new Intent(AgendaTelefonica.this, ViewContact.class);
          
          // pass the selected contact's row ID as an extra with the Intent
          viewContact.putExtra(ROW_ID, position);
@@ -261,7 +263,7 @@ public class AddressBook extends ListActivity
                bluetoothAdapter.listenUsingRfcommWithServiceRecord(
                   NAME, MY_UUID);
 
-            displayToastViaHandler(AddressBook.this, handler, 
+            displayToastViaHandler(AgendaTelefonica.this, handler, 
                R.string.waiting_for_contact);
 
             // wait for connection
@@ -304,12 +306,12 @@ public class AddressBook extends ListActivity
       
                   // update the contacts list
                   new GetContactsTask().execute((Object[]) null);
-                  displayToastViaHandler(AddressBook.this, handler, 
+                  displayToastViaHandler(AgendaTelefonica.this, handler, 
                      R.string.contact_received);
                } // end try
                catch (JSONException e) // problem with the JSON formatting
                {        
-                  displayToastViaHandler(AddressBook.this, handler, 
+                  displayToastViaHandler(AgendaTelefonica.this, handler, 
                      R.string.contact_not_received);
                   Log.e(TAG, e.toString());
                } // end catch
@@ -361,20 +363,4 @@ public class AddressBook extends ListActivity
          } // end Runnable
       ); // end call to handler's post method
    } // end method displayToastViaHandler
-} // end class AddressBook
-
-
-/**************************************************************************
- * (C) Copyright 1992-2012 by Deitel & Associates, Inc. and               *
- * Pearson Education, Inc. All Rights Reserved.                           *
- *                                                                        *
- * DISCLAIMER: The authors and publisher of this book have used their     *
- * best efforts in preparing the book. These efforts include the          *
- * development, research, and testing of the theories and programs        *
- * to determine their effectiveness. The authors and publisher make       *
- * no warranty of any kind, expressed or implied, with regard to these    *
- * programs or to the documentation contained in these books. The authors *
- * and publisher shall not be liable in any event for incidental or       *
- * consequential damages in connection with, or arising out of, the       *
- * furnishing, performance, or use of these programs.                     *
- **************************************************************************/
+} // end class AgendaTelefonica

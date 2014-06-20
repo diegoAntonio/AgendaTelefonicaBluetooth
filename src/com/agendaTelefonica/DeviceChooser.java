@@ -1,9 +1,12 @@
 // DeviceChooser.java
 // Activity for choosing a connecting device.
-package com.deitel.addressbook;
+package com.agendaTelefonica;
 
 import java.util.Set;
 
+import com.agendaTelefonica.R;
+
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.bluetooth.BluetoothAdapter;
@@ -24,6 +27,7 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
 
+@SuppressLint("ShowToast")
 public class DeviceChooser extends ListActivity 
 {
    // length of a MAC address in characters
@@ -216,19 +220,3 @@ public class DeviceChooser extends ListActivity
          } // end method onReceive
       }; // end BroadcastReceiver
 } // end class DeviceChooser
-
-
-/**************************************************************************
- * (C) Copyright 1992-2012 by Deitel & Associates, Inc. and               *
- * Pearson Education, Inc. All Rights Reserved.                           *
- *                                                                        *
- * DISCLAIMER: The authors and publisher of this book have used their     *
- * best efforts in preparing the book. These efforts include the          *
- * development, research, and testing of the theories and programs        *
- * to determine their effectiveness. The authors and publisher make       *
- * no warranty of any kind, expressed or implied, with regard to these    *
- * programs or to the documentation contained in these books. The authors *
- * and publisher shall not be liable in any event for incidental or       *
- * consequential damages in connection with, or arising out of, the       *
- * furnishing, performance, or use of these programs.                     *
- **************************************************************************/

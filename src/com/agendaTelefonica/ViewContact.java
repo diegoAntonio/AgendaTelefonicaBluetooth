@@ -1,6 +1,6 @@
 // ViewContact.java
 // Activity for viewing a single contact.
-package com.deitel.addressbook;
+package com.agendaTelefonica;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -8,6 +8,9 @@ import java.io.OutputStream;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.agendaTelefonica.R;
+
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -59,7 +62,7 @@ public class ViewContact extends Activity
       
       // get the selected contact's row ID
       Bundle extras = getIntent().getExtras();
-      rowID = extras.getLong(AddressBook.ROW_ID); 
+      rowID = extras.getLong(AgendaTelefonica.ROW_ID); 
       
       // get the default Bluetooth adapter
       bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -142,7 +145,7 @@ public class ViewContact extends Activity
                new Intent(this, AddEditContact.class);
             
             // pass the selected contact's data as extras with the Intent
-            addEditContact.putExtra(AddressBook.ROW_ID, rowID);
+            addEditContact.putExtra(AgendaTelefonica.ROW_ID, rowID);
             addEditContact.putExtra("name", nameTextView.getText());
             addEditContact.putExtra("phone", phoneTextView.getText());
             addEditContact.putExtra("email", emailTextView.getText());
@@ -209,7 +212,7 @@ public class ViewContact extends Activity
                      @Override
                      protected void onPostExecute(Object result)
                      {
-                        finish(); // return to the AddressBook Activity
+                        finish(); // return to the AgendaTelefonica Activity
                      } // end method onPostExecute
                   }; // end new AsyncTask
 
@@ -225,7 +228,8 @@ public class ViewContact extends Activity
   
    // called when an Activity launched from this one using 
    // startActivityForResult finishes
-   public void onActivityResult(int requestCode, int resultCode, 
+   @SuppressLint("ShowToast")
+public void onActivityResult(int requestCode, int resultCode, 
       Intent data) 
    {
       // if the connection was established
@@ -261,12 +265,12 @@ public class ViewContact extends Activity
          // make connection to remote device and send contact
          try 
          {
-            AddressBook.displayToastViaHandler(ViewContact.this, handler, 
+            AgendaTelefonica.displayToastViaHandler(ViewContact.this, handler, 
                R.string.sending_contact);
 
             // get BluetoothSocket, then connect to the other device
             bluetoothSocket = device.createRfcommSocketToServiceRecord(
-               AddressBook.MY_UUID);
+               AgendaTelefonica.MY_UUID);
             bluetoothSocket.connect(); // establish connection
             
             // get streams for communicating via BluetoothSocket
@@ -283,18 +287,18 @@ public class ViewContact extends Activity
             // send a byte array containing the contact's information
             outputStream.write(contact.toString().getBytes()); 
             outputStream.flush();
-            AddressBook.displayToastViaHandler(ViewContact.this, handler, 
+            AgendaTelefonica.displayToastViaHandler(ViewContact.this, handler, 
                R.string.contact_sent);
          } // end try
          catch (IOException e) // problem sending contact
          {
-            AddressBook.displayToastViaHandler(ViewContact.this, handler, 
+            AgendaTelefonica.displayToastViaHandler(ViewContact.this, handler, 
                R.string.transfer_failed);
             Log.e(TAG, e.toString());
          } // end catch
          catch (JSONException e) // problem with JSON data formatting
          {
-            AddressBook.displayToastViaHandler(ViewContact.this, handler, 
+            AgendaTelefonica.displayToastViaHandler(ViewContact.this, handler, 
                R.string.transfer_failed);
             Log.e(TAG, e.toString());
          } // end catch
@@ -316,19 +320,3 @@ public class ViewContact extends Activity
       } // end method doInBackground
    } // end class SendContactTask 
 } // end class ViewContact
-
-
-/**************************************************************************
- * (C) Copyright 1992-2012 by Deitel & Associates, Inc. and               *
- * Pearson Education, Inc. All Rights Reserved.                           *
- *                                                                        *
- * DISCLAIMER: The authors and publisher of this book have used their     *
- * best efforts in preparing the book. These efforts include the          *
- * development, research, and testing of the theories and programs        *
- * to determine their effectiveness. The authors and publisher make       *
- * no warranty of any kind, expressed or implied, with regard to these    *
- * programs or to the documentation contained in these books. The authors *
- * and publisher shall not be liable in any event for incidental or       *
- * consequential damages in connection with, or arising out of, the       *
- * furnishing, performance, or use of these programs.                     *
- **************************************************************************/
