@@ -1,3 +1,4 @@
+/** Automatically generated file. DO NOT MODIFY */
 package com.agendaTelefonica;
 
 public final class BuildConfig {
