@@ -1,7 +1,7 @@
 // AdicionarEditarContato.java
 // Activity para adicionar uma nova entrada ou
 // Editar uma entrada existente na agenda telefonica.
-package com.agendaTelefonica;
+package src.agendaTelefonica;
 
 import com.agendaTelefonica.R;
 

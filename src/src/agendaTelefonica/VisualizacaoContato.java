@@ -1,6 +1,6 @@
 // VisualizacaoContato.java
 // Atividade para a visualização de um único contato.
-package com.agendaTelefonica;
+package src.agendaTelefonica;
 
 import java.io.IOException;
 import java.io.OutputStream;

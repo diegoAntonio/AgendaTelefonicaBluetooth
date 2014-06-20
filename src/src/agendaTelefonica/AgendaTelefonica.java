@@ -1,6 +1,6 @@
 // AgendaTelefonica.java
 // Main activity for the Address Book app.
-package com.agendaTelefonica;
+package src.agendaTelefonica;
 
 import java.io.IOException;
 import java.io.InputStream;

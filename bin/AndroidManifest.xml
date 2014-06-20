@@ -8,18 +8,18 @@
     
    <application android:icon="@drawable/icon" 
       android:label="@string/app_name">
-      <activity android:name=".agendatelefonica" 
+      <activity android:name="src.agendaTelefonica.AgendaTelefonica" 
          android:label="@string/app_name">
          <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
          </intent-filter>
       </activity>
-      <activity android:name=".AdicionarEditarContato" 
+      <activity android:name="src.agendaTelefonica.AdicionarEditarContato" 
          android:label="@string/app_name"></activity>
-      <activity android:name=".VisualizacaoContato" 
+      <activity android:name="src.agendaTelefonica.VisualizacaoContato" 
          android:label="@string/app_name"></activity>
-      <activity android:name=".SeletorDispositivo" 
+      <activity android:name="src.agendaTelefonica.SeletorDispositivo" 
          android:label="@string/app_name"></activity>
    </application>
 </manifest> 

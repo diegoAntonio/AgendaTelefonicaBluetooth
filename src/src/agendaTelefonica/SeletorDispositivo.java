@@ -1,6 +1,6 @@
 // SeletorDispositivo.java
 // Activity para a escolha de um dispositivo de ligação.
-package com.agendaTelefonica;
+package src.agendaTelefonica;
 
 import java.util.Set;
 

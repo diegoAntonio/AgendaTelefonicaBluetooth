@@ -1,6 +1,6 @@
 // ConexaoBancoDados.java
 // Fornece fácil conexão e criação de banco de dados UserContacts.
-package com.agendaTelefonica;
+package src.agendaTelefonica;
 
 import android.content.ContentValues;
 import android.content.Context;
