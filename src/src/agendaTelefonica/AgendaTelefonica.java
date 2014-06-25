@@ -121,10 +121,10 @@ public class AgendaTelefonica extends ListActivity
 		@Override
 		protected Cursor doInBackground(Object... params)
 		{
-			databaseConnector.open();
+			databaseConnector.abrirConexao();
 
 			// Obtém um cursor que contém contatos de chamadas
-			return databaseConnector.getAllContacts(); 
+			return databaseConnector.consultarTodosContatos(); 
 		} // Fim do metodo doInBackground
 
 		// Usar o cursor retornado do método doInBackground
@@ -132,7 +132,7 @@ public class AgendaTelefonica extends ListActivity
 		protected void onPostExecute(Cursor result)
 		{
 			contactAdapter.changeCursor(result); // Define o cursor do adaptador
-			databaseConnector.close();
+			databaseConnector.fecharConexao();
 		} // Fim do metodo onPostExecute
 	} // Fim da classe GetContactsTask
 
@@ -224,7 +224,7 @@ public class AgendaTelefonica extends ListActivity
 		case REQUEST_DISCOVERABILITY: 
 			if (resultCode != RESULT_CANCELED) // Usuario deu permissao
 			{
-				listenForContact(); //Inicia listening de uma conexao
+				iniciarListeningContato(); //Inicia listening de uma conexao
 			} // Fim de if
 			else // Usuario nao permitiu descoberta
 			{
@@ -237,7 +237,7 @@ public class AgendaTelefonica extends ListActivity
 	} // Fim do metodo onActivityResult
 
 	// Inicia listening de um contato enviados a partir de outro dispositivo
-	private void listenForContact()
+	private void iniciarListeningContato()
 	{
 		// Iniciar a tarefa, esperar por uma conexao
 		// E receber um contato
@@ -295,9 +295,9 @@ public class AgendaTelefonica extends ListActivity
 								new ConexaoBancoDados(getBaseContext());
 
 						// Abre o banco de dados e adicionar o contato à base de dados
-						databaseConnector.open(); // Conecta ao banco de dados
+						databaseConnector.abrirConexao(); // Conecta ao banco de dados
 
-						databaseConnector.insertContact( // Adiciona o contato
+						databaseConnector.inserirContato( // Adiciona o contato
 								contact.getString("name"), 
 								contact.getString("email"), 
 								contact.getString("phone"), 
@@ -318,7 +318,7 @@ public class AgendaTelefonica extends ListActivity
 					finally // Assegura que a conexão com o banco está fechado
 					{
 						if (databaseConnector != null)
-							databaseConnector.close(); // Fecha a conexao
+							databaseConnector.fecharConexao(); // Fecha a conexao
 					} // Fim de finally
 				} // Fim de if
 			} // Fim de try

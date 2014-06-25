@@ -64,7 +64,7 @@ public class SeletorDispositivo extends ListActivity
 					// Chamado quando o scanButton é clicado
 					public void onClick(View v) 
 					{
-						startDiscovery(); // iniciar a procurar dispositivos
+						iniciarBusca(); // iniciar a procurar dispositivos
 					} // Fim do metodo onClick
 				} // Fim de OnClickListener
 				); // Fim de call to setOnClickListener
@@ -123,7 +123,7 @@ public class SeletorDispositivo extends ListActivity
 	} // Fim do metodo onDestroy
 
 	// iniciar a busca de dispositivos
-	private void startDiscovery() 
+	private void iniciarBusca() 
 	{
 		// Verifica se o Bluetooth ainda está habilitado
 		if (!bluetoothAdapter.isEnabled()) 

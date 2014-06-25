@@ -26,21 +26,21 @@ public class ConexaoBancoDados
 	} // Fim de DatabaseConnector constructor
 
 	// Abre a conexão com o banco
-	public void open() throws SQLException 
+	public void abrirConexao() throws SQLException 
 	{
 		// Criar ou abrir um banco de dados para leitura/escrita
 		database = databaseOpenHelper.getWritableDatabase();
 	} // Fim do metodo open
 
 	// Fecha a conexão com o banco
-	public void close() 
+	public void fecharConexao() 
 	{
 		if (database != null)
 			database.close(); // Fim do método close 
 	} // Fim do metodo close
 
 	// Insere um novo contato no banco de dados 
-	public void insertContact(String name, String email, String phone, 
+	public void inserirContato(String name, String email, String phone, 
 			String street, String city) 
 	{
 		ContentValues newContact = new ContentValues();
@@ -50,13 +50,13 @@ public class ConexaoBancoDados
 		newContact.put("street", street);
 		newContact.put("city", city);
 
-		open(); // Abrir a base de dados 
+		abrirConexao(); // Abrir a base de dados 
 		database.insert("contacts", null, newContact);
-		close(); // Fechar a base de dados
+		fecharConexao(); // Fechar a base de dados
 	} // Fim do metodo insertContact
 
 	// Insere um novo contato no banco de dados 
-	public void updateContact(long id, String name, String email, 
+	public void atualizarContato(long id, String name, String email, 
 			String phone, String street, String city) 
 	{
 		ContentValues editContact = new ContentValues();
@@ -66,13 +66,13 @@ public class ConexaoBancoDados
 		editContact.put("street", street);
 		editContact.put("city", city);
 
-		open(); // Abrir a base de dados
+		abrirConexao(); // Abrir a base de dados
 		database.update("contacts", editContact, "_id=" + id, null);
-		close(); // Fechar a base de dados
+		fecharConexao(); // Fechar a base de dados
 	} // Fim do metodo updateContact
 
 	// Retorna um cursor com todas as informações de contato no banco de dados
-	public Cursor getAllContacts() 
+	public Cursor consultarTodosContatos() 
 	{
 		return database.query("contacts", new String[] {"_id", "name"}, 
 				null, null, null, null, "name");
@@ -80,18 +80,18 @@ public class ConexaoBancoDados
 
 	// Obtém um cursor que contém todas as informações sobre o contato especificado
 	// Pelo id fornecido
-	public Cursor getOneContact(long id) 
+	public Cursor consultarContatoPorId(long id) 
 	{
 		return database.query(
 				"contacts", null, "_id=" + id, null, null, null, null);
 	} // Fim do metodo getOnContact
 
 	// Exclui o contato especificado pelo nome
-	public void deleteContact(long id) 
+	public void deletarContato(long id) 
 	{
-		open(); // Abrir a base de dados
+		abrirConexao(); // Abrir a base de dados
 		database.delete("contacts", "_id=" + id, null);
-		close(); // Fechar a base de dados
+		fecharConexao(); // Fechar a base de dados
 	} // Fim do metodo deleteContact
 
 	private class DatabaseOpenHelper extends SQLiteOpenHelper 

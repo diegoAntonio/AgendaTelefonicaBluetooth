@@ -71,7 +71,7 @@ public class AdicionarEditarContato extends Activity
 					@Override
 					protected Object doInBackground(Object... params) 
 					{
-						saveContact(); // Salva o contato com o banco de dados
+						salvarContato(); // Salva o contato com o banco de dados
 						return null;
 					} // Fim do metodo doInBackground
 
@@ -101,7 +101,7 @@ public class AdicionarEditarContato extends Activity
 	}; // Fim de OnClickListener saveContactButtonClicked
 
 	// Salva as informações de contato para o banco de dados
-	private void saveContact() 
+	private void salvarContato() 
 	{
 		// Obtém DatabaseConnector para interagir com o banco de dados SQLite
 		ConexaoBancoDados databaseConnector = new ConexaoBancoDados(this);
@@ -109,7 +109,7 @@ public class AdicionarEditarContato extends Activity
 		if (getIntent().getExtras() == null)
 		{
 			// Inserir as informações de contato no banco de dados
-			databaseConnector.insertContact(
+			databaseConnector.inserirContato(
 					nameEditText.getText().toString(),
 					emailEditText.getText().toString(), 
 					phoneEditText.getText().toString(), 
@@ -118,7 +118,7 @@ public class AdicionarEditarContato extends Activity
 		} // Fim do if
 		else
 		{
-			databaseConnector.updateContact(rowID,
+			databaseConnector.atualizarContato(rowID,
 					nameEditText.getText().toString(),
 					emailEditText.getText().toString(), 
 					phoneEditText.getText().toString(), 

@@ -89,10 +89,10 @@ public class VisualizacaoContato extends Activity
 		@Override
 		protected Cursor doInBackground(Long... params)
 		{
-			databaseConnector.open();
+			databaseConnector.abrirConexao();
 
 			// Obtém um cursor que contém todos os dados sobre determinada entrada
-			return databaseConnector.getOneContact(params[0]);
+			return databaseConnector.consultarContatoPorId(params[0]);
 		} // Fim do metodo doInBackground
 
 		// Usar o cursor retornado do método doInBackground
@@ -118,7 +118,7 @@ public class VisualizacaoContato extends Activity
 			cityTextView.setText(result.getString(cityIndex));
 
 			result.close(); // Fecha o result
-			databaseConnector.close(); // Fecha a conexão com o banco
+			databaseConnector.fecharConexao(); // Fecha a conexão com o banco
 		} // Fim do metodo onPostExecute
 	} // Fim da classe LoadContactTask
 
@@ -204,7 +204,7 @@ public class VisualizacaoContato extends Activity
 					@Override
 					protected Object doInBackground(Long... params)
 					{
-						databaseConnector.deleteContact(params[0]); 
+						databaseConnector.deletarContato(params[0]); 
 						return null;
 					} // Fim do metodo doInBackground
 
