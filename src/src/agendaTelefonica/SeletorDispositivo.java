@@ -1,5 +1,5 @@
 // SeletorDispositivo.java
-// Activity para a escolha de um dispositivo de ligação.
+// Activity para a escolha de um dispositivo de conexão.
 package src.agendaTelefonica;
 
 import java.util.Set;
@@ -30,7 +30,7 @@ import android.widget.Toast;
 @SuppressLint("ShowToast")
 public class SeletorDispositivo extends ListActivity 
 {
-	// Comprimento de um endereço MAC em caracteres
+	// Tamanho de um endereço MAC em caracteres
 	private static final int MAC_ADDRESS_LENGTH = 17;
 
 	// A chave para armazenar o endereço MAC do dispositivo selecionado como um Intent extra
@@ -40,23 +40,23 @@ public class SeletorDispositivo extends ListActivity
 	private ArrayAdapter<String> foundDevicesAdapter; // Dados ListView
 	private ListView newDevicesListView; // ListView que mostra os dispositivos
 
-	// Chamado quando esta Activity  é criada pela primeira vez
+	// Chamado quando esta Activity é criada pela primeira vez
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
 
-		// Mostra uma barra de progresso enquanto cargas de atividade
+		// Mostra uma barra de progresso enquanto cargas de activity
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
-		// Define o layout da Atividade
+		// Define o layout da activity
 		setContentView(R.layout.device_chooser_layout);
 
 		// Define o código de resultado para voltar à Activity anterior
-		// Se o usuário toca o botão "Cancel"
+		// Se o usuário tocar o botão "Cancelar"
 		setResult(Activity.RESULT_CANCELED);
 
-		// Cria botão para iniciar a descoberta
+		// Cria botão para iniciar a busca de dispositivos
 		Button scanButton = (Button) findViewById(R.id.scanButton);
 		scanButton.setOnClickListener(
 				new OnClickListener() 
@@ -64,7 +64,7 @@ public class SeletorDispositivo extends ListActivity
 					// Chamado quando o scanButton é clicado
 					public void onClick(View v) 
 					{
-						startDiscovery(); // Começar a procurar dispositivos
+						startDiscovery(); // iniciar a procurar dispositivos
 					} // Fim do metodo onClick
 				} // Fim de OnClickListener
 				); // Fim de call to setOnClickListener
@@ -106,7 +106,7 @@ public class SeletorDispositivo extends ListActivity
 		} // Fim de for
 	} // Fim do metodo onCreate
 
-	// Chamada antes dessa Activity é destruída
+	// Metodo chamado antes que essa Activity seja destruída
 	@Override
 	protected void onDestroy() 
 	{
@@ -122,7 +122,7 @@ public class SeletorDispositivo extends ListActivity
 		unregisterReceiver(deviceChooserReceiver);
 	} // Fim do metodo onDestroy
 
-	// Começar a descoberta
+	// iniciar a busca de dispositivos
 	private void startDiscovery() 
 	{
 		// Verifica se o Bluetooth ainda está habilitado
@@ -141,18 +141,18 @@ public class SeletorDispositivo extends ListActivity
 		// Mostrar a barra de progresso
 		setProgressBarIndeterminateVisibility(true);
 
-		// Começar a procurar por outros dispositivos
+		// iniciar a procurar por outros dispositivos
 		bluetoothAdapter.startDiscovery();
 	} // Fim do metodo startDiscovery
 
-	// Escuta para os eventos gerados quando o usuário clica item de ListView
+	// Listener para os eventos gerados quando o usuário clica item de ListView
 	private OnItemClickListener deviceListItemClickListener = 
 			new OnItemClickListener() 
 	{
 		public void onItemClick(AdapterView<?> parent, View view,  
 				int position, long id) 
 		{
-			// Cancelar a descoberta antes de tentar conectar
+			// Cancelar a busca antes de tentar conectar
 			bluetoothAdapter.cancelDiscovery();
 
 			// Pega o endereço MAC do dispositivo selecionado
@@ -160,7 +160,7 @@ public class SeletorDispositivo extends ListActivity
 			String address = info.substring(info.length() - 
 					MAC_ADDRESS_LENGTH);
 
-			// Cria a intenção de retornar à chamada Activity
+			// Cria a Intent de retornar à chamada Activity
 			Intent intent = new Intent();
 
 			// Incluir o endereço MAC do dispositivo na Intent de retorno
@@ -172,15 +172,15 @@ public class SeletorDispositivo extends ListActivity
 		} // Fim do metodo onItemClick
 	}; // Fim de OnItemClickListener
 
-	// Escuta para transmissão de Intents anunciando quando uma
+	// Escuta para transmissão de Intents avisando quando uma
 	// descoberta finaliza e quando novos dispositivos são detectados
 	private final BroadcastReceiver deviceChooserReceiver = 
 			new BroadcastReceiver() 
 	{
-		// Chamada quando uma transmissão é recebido
+		// Chamada quando uma transmissão é recebida
 		public void onReceive(Context context, Intent intent) 
 		{
-			// Obtém a ação do Intenção chamando
+			// Obtém a ação do Intent chamando
 			String action = intent.getAction(); 
 
 			// Um novo dispositivo foi detectado

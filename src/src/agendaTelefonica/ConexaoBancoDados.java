@@ -15,9 +15,9 @@ public class ConexaoBancoDados
 	//  Nome do banco
 	private static final String DATABASE_NAME = "UserContacts";
 	private SQLiteDatabase database; // Objeto de banco de dados
-	private DatabaseOpenHelper databaseOpenHelper; // Banco de Dados Helper
+	private DatabaseOpenHelper databaseOpenHelper;
 
-	// Construtor público para DatabaseConnector
+	// Construtor para DatabaseConnector
 	public ConexaoBancoDados(Context context) 
 	{
 		// Cria um novo DatabaseOpenHelper
@@ -79,7 +79,7 @@ public class ConexaoBancoDados
 	} // Fim do metodo getAllContacts
 
 	// Obtém um cursor que contém todas as informações sobre o contato especificado
-	// Pelo id dado
+	// Pelo id fornecido
 	public Cursor getOneContact(long id) 
 	{
 		return database.query(
@@ -96,12 +96,12 @@ public class ConexaoBancoDados
 
 	private class DatabaseOpenHelper extends SQLiteOpenHelper 
 	{
-		// Construtor público 
+		// Construtor 
 		public DatabaseOpenHelper(Context context, String name,
 				CursorFactory factory, int version) 
 		{
 			super(context, name, factory, version);
-		} // Fim de DatabaseOpenHelper constructor
+		} // Fim do constructor de DatabaseOpenHelper
 
 		// Cria a tabela de contatos quando o banco de dados é criado 
 		@Override

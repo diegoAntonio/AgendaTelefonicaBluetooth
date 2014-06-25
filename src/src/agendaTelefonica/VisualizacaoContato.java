@@ -1,5 +1,5 @@
 // VisualizacaoContato.java
-// Atividade para a visualização de um único contato.
+// activity para a visualização de um único contato.
 package src.agendaTelefonica;
 
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class VisualizacaoContato extends Activity
 {
 	private static final String TAG = VisualizacaoContato.class.getName();
 
-	// Código de pedido Intenção usado para iniciar uma atividade que retorna um resultado
+	// Código de pedido Intent usado para iniciar uma activity que retorna um resultado
 	private static final int REQUEST_CONNECT_DEVICE = 1;
 
 	private BluetoothAdapter bluetoothAdapter = null; // Declaracao de uma variavel BluetoothAdapter
@@ -43,9 +43,9 @@ public class VisualizacaoContato extends Activity
 	private TextView phoneTextView; // Exibe o telefone de contato 
 	private TextView emailTextView; // Exibe um contato de e-mail 
 	private TextView streetTextView; // Exibe rua do contato
-	private TextView cityTextView; // Exibe cidade/estado/zip do contato
+	private TextView cityTextView; // Exibe cidade/estado/CEP do contato
 
-	// Chamado quando a atividade é criada pela primeira vez
+	// Chamado quando a activity é criada pela primeira vez
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
 	{
@@ -69,13 +69,13 @@ public class VisualizacaoContato extends Activity
 		handler = new Handler(); // Criacao do Handler
 	} // Fim do metodo onCreate
 
-	// Chamado quando a atividade é criada pela primeira vez
+	// Chamado quando a activity é criada pela primeira vez
 	@Override
 	protected void onResume()
 	{
 		super.onResume();
 
-		// Cria novo LoadContactTask e executá-lo
+		// Cria novo LoadContactTask e o executa
 		new LoadContactTask().execute(rowID);
 	} // Fim do metodo onResume
 
@@ -122,7 +122,7 @@ public class VisualizacaoContato extends Activity
 		} // Fim do metodo onPostExecute
 	} // Fim da classe LoadContactTask
 
-	// Cria o menu da Atividade de um arquivo XML recurso de menu
+	// Cria o menu da activity de um arquivo XML recurso de menu
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) 
 	{
@@ -136,14 +136,14 @@ public class VisualizacaoContato extends Activity
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) 
 	{
-		switch (item.getItemId()) // Switch baseado em selecionado ID do MenuItem
+		switch (item.getItemId()) // Switch baseado no ID selecionado do MenuItem
 		{
 		case R.id.editItem: // Selecionado Editar Contato item de menu
-			// Cria a intenção de lançar o AddEditContact Atividade
+			// Cria a Intent de iniciar o AddEditContact activity
 			Intent addEditContact =
 			new Intent(this, AdicionarEditarContato.class);
 
-			// Passa os dados do contato selecionado como extras, com a intenção
+			// Passa os dados do contato selecionado como extras, com a Intent
 			addEditContact.putExtra(AgendaTelefonica.ROW_ID, rowID);
 			addEditContact.putExtra("name", nameTextView.getText());
 			addEditContact.putExtra("phone", phoneTextView.getText());
@@ -159,7 +159,7 @@ public class VisualizacaoContato extends Activity
 			// Se não estiver conectado
 			if (bluetoothAdapter.isEnabled()) 
 			{
-				// Lançamento DeviceChooser assim o usuário pode escolher um dispositivo próximo
+				// Inicia DeviceChooser assim o usuário pode escolher um dispositivo próximo
 				Intent serverIntent = 
 						new Intent(this, SeletorDispositivo.class);
 				startActivityForResult(
@@ -186,7 +186,7 @@ public class VisualizacaoContato extends Activity
 		builder.setTitle(R.string.confirmTitle); // Barra de titulo String
 		builder.setMessage(R.string.confirmMessage); // Mensagem para ser exibida
 
-		// Fornece um botão OK que simplesmente descarta o diálogo
+		// Fornece um botão OK que descarta o diálogo
 		builder.setPositiveButton(R.string.button_delete,
 				new DialogInterface.OnClickListener()
 		{
@@ -225,7 +225,7 @@ public class VisualizacaoContato extends Activity
 		builder.show(); // Exibe a caixa de diálogo
 	} // Fim do metodo DeleteContact
 
-	// Chamado quando uma Atividade lançado a partir de este usando
+	// Chamado quando uma activity é iniciada a partir deste
 	// Termina startActivityForResult
 	@SuppressLint("ShowToast")
 	public void onActivityResult(int requestCode, int resultCode, 
@@ -234,7 +234,7 @@ public class VisualizacaoContato extends Activity
 		// Se a conexão foi estabelecida
 		if (resultCode == Activity.RESULT_OK) 
 		{
-			// Obtém o endereço MAC do dispositivo remoto e passá-lo para que 
+			// Obtém o endereço MAC do dispositivo remoto e o passa para que 
 			// SendContactTask do método execute
 			new SendContactTask().execute(new String[] { 
 					data.getExtras().getString(SeletorDispositivo.DEVICE_ADDRESS)});

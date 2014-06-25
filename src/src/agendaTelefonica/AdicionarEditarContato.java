@@ -25,7 +25,7 @@ public class AdicionarEditarContato extends Activity
 	private EditText streetEditText;
 	private EditText cityEditText;
 
-	// Chamado quando a atividade é iniciado pela primeira vez
+	// Chamado quando a activity é iniciado pela primeira vez
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
 	{

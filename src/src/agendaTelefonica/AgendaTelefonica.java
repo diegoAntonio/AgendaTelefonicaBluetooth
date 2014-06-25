@@ -53,15 +53,15 @@ public class AgendaTelefonica extends ListActivity
 	private boolean userAllowedBluetooth = true;
 	private Handler handler; // Para a exibição de Toasts de tópicos não-GUI 
 
-	public static final String ROW_ID = "row_id"; // Chave extra Intenção 
+	public static final String ROW_ID = "row_id"; // Chave extra Intent  
 	private ListView contactListView; // ListView do ListActivity
 	private CursorAdapter contactAdapter; // Adaptador para ListView
 
-	// Chamado quando a atividade é criada pela primeira vez 
+	// Chamado quando a activity é criada pela primeira vez 
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
 	{
-		super.onCreate(savedInstanceState); // Chama de super do onCreate 
+		super.onCreate(savedInstanceState); // Chama o super do método onCreate 
 		contactListView = getListView(); // Obtém o ListView embutido 
 		contactListView.setOnItemClickListener(viewContactListener);      
 
@@ -78,16 +78,16 @@ public class AgendaTelefonica extends ListActivity
 		handler = new Handler(); // Para a exibição de Toasts no thread de GUI
 	} // Fim do metodo onCreate 
 
-	// Chamado quando esta atividade retorna do fundo
+	// Chamado quando esta activity retorna do fundo
 	@Override
 	protected void onResume() 
 	{
 		super.onResume(); // Chama o método de super-onResume
 
-		// Solicitar que o Bluetooth esteja ativado, se não é já
+		// Solicitar que o Bluetooth esteja ativado, caso não estiver
 		if (!bluetoothAdapter.isEnabled() && userAllowedBluetooth) 
 		{
-			// Criar e começar a intenção de pedir usuário para ativar o Bluetooth
+			// Criar e iniciar a Intent de pedir usuário para ativar o Bluetooth
 			Intent enableBluetoothIntent = new Intent(
 					BluetoothAdapter.ACTION_REQUEST_ENABLE);
 			startActivityForResult(enableBluetoothIntent, 
@@ -98,7 +98,7 @@ public class AgendaTelefonica extends ListActivity
 		new GetContactsTask().execute((Object[]) null);
 	} // Fim do metodo onResume
 
-	// Quando esta atividade é interrompida, desativar Cursor para ListView
+	// Quando esta activity é interrompida, desativar Cursor para ListView
 	@Override
 	protected void onStop() 
 	{
@@ -136,7 +136,7 @@ public class AgendaTelefonica extends ListActivity
 		} // Fim do metodo onPostExecute
 	} // Fim da classe GetContactsTask
 
-	// Cria o menu da Atividade de um arquivo XML recurso de menu
+	// Cria o menu da activity de um arquivo XML recurso de menu
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) 
 	{
@@ -153,7 +153,7 @@ public class AgendaTelefonica extends ListActivity
 		switch (item.getItemId())
 		{
 		case R.id.addContactItem: 
-			// Cria uma nova intenção de lançar o AdicionarEditarContato Activity
+			// Cria uma nova Intent de iniciar o AdicionarEditarContato Activity
 			Intent addNewContact = 
 			new Intent(AgendaTelefonica.this, AdicionarEditarContato.class);
 			startActivity(addNewContact); // Inicia AdicionarEditarContato Activity
@@ -161,13 +161,13 @@ public class AgendaTelefonica extends ListActivity
 		case R.id.receiveContactItem:
 			if (bluetoothAdapter.isEnabled())
 			{
-				// Lançamento Intenção para solicitar descoberta por 120 segundos
+				// Inicia Intent para solicitar descoberta por 120 segundos
 				Intent requestDiscoverabilityIntent = new Intent(
 						BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
 				startActivityForResult(requestDiscoverabilityIntent, 
 						REQUEST_DISCOVERABILITY);
 			} // Fim de if
-			else // Usuário não permitiu adaptador Bluetooth esteja ativado
+			else // Usuário não permitiu que o adaptador Bluetooth esteja ativado
 			{
 				Toast.makeText(this, 
 						R.string.no_bluetooth,
@@ -179,7 +179,7 @@ public class AgendaTelefonica extends ListActivity
 		return super.onOptionsItemSelected(item); // Chama o metodo de super
 	} // Fim do metodo onOptionsItemSelected
 
-	// Ouvinte evento que responde ao utilizador
+	// Listener do Evento que responde ao usuário
 	// Tocar no nome do contato no ListView
 	OnItemClickListener viewContactListener = new OnItemClickListener() 
 	{
@@ -187,7 +187,7 @@ public class AgendaTelefonica extends ListActivity
 		public void onItemClick(AdapterView<?> parent, View view, int id,
 				long position) 
 		{
-			// Cria a intenção de lançar a ViewContact Activity
+			// Cria a Intent de iniciar a ViewContact Activity
 			Intent viewContact = 
 					new Intent(AgendaTelefonica.this, VisualizacaoContato.class);
 
@@ -236,10 +236,10 @@ public class AgendaTelefonica extends ListActivity
 		} // Fim de switch
 	} // Fim do metodo onActivityResult
 
-	// Inicia listening de um contacto enviados a partir de outro dispositivo
+	// Inicia listening de um contato enviados a partir de outro dispositivo
 	private void listenForContact()
 	{
-		// Inicia tarefa de fundo que esperar por conexao
+		// Iniciar a tarefa, esperar por uma conexao
 		// E receber um contato
 		ReceiveContactTask task = new ReceiveContactTask();
 		task.execute((Object[]) null);
@@ -252,7 +252,7 @@ public class AgendaTelefonica extends ListActivity
 		private BluetoothServerSocket serverSocket; // Espera por conexão
 		private BluetoothSocket socket; // Usado para processar conexão
 
-		// Aguardar ligação, receber o contato e atualização da lista de contatos
+		// Esperar conexão, receber o contato e atualizar a lista de contatos
 		@Override
 		protected Object doInBackground(Object... params)
 		{
@@ -330,11 +330,11 @@ public class AgendaTelefonica extends ListActivity
 			{
 				try 
 				{
-					// Se o BluetoothServerSocket não é nulo, fechá-lo 
+					// Fechar o BluetoothServerSocket se não for null
 					if (serverSocket != null)
 						serverSocket.close();
 
-					// Se o BluetoothSocket não é nulo, fechá-lo 
+					// Fechar o BluetoothSocket se não for null
 					if (socket != null)
 						socket.close();
 				} // Fim de try
