@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <string name="app_name">Agenda Telefônica</string>
+   <string name="button_save_contact">Salvar Contato</string>
+   <string name="button_scan">Buscando dispositivos compatíveis</string>
+   <string name="menuitem_add_contact">Adicionar Contato</string>
+   <string name="menuitem_edit_contact">Editar Contato</string>
+   <string name="menuitem_delete_contact">Deletar Contato</string>
+   <string name="menuitem_transfer_contact">Transferir Contato</string>
+   <string name="address">Endereço</string>
+   <string name="hint_name">Nome</string>
+   <string name="hint_email">E-Mail</string>
+   <string name="hint_phone">Telefone</string>
+   <string name="hint_street">Rua</string>
+   <string name="hint_city">Cidade/Estado</string>
+   <string name="label_name">Nome:</string>
+   <string name="label_email">E-Mail:</string>
+   <string name="label_phone">Telefone:</string>
+   <string name="label_street">Rua:</string>
+   <string name="label_city">Cidade/Estado:</string>
+   <string name="confirmTitle">Tem Certeza?</string>
+   <string name="confirmMessage">
+      Você removerá permanentemente o contato</string>
+   <string name="errorButton">OK</string>
+   <string name="errorTitle">O nome do contato é obrigatório</string>
+   <string name="errorMessage">Você deve informar um nome para o contato</string>
+   <string name="button_cancel">Cancelar</string>
+   <string name="button_delete">Deletar</string>
+   <string name="title_other_devices">Dispositivos Detectados</string>
+   <string name="waiting_for_contact">Esperando o contato ser enviado</string>
+   <string name="sending_contact">Enviando o contato</string>
+   <string name="contact_received">Contato recebido</string>
+   <string name="contact_not_received">Houve um erro no recebimento do contato</string>
+   <string name="connection_error">Não foi possível conectar</string>
+   <string name="choose_device">Escolha um dispositivo</string>
+   <string name="no_devices">Não foram encontrados dispositivos</string>
+   <string name="contact_sent">Contato Enviado</string>
+   <string name="no_bluetooth">Bluetooth não está ativado</string>
+   <string name="bluetooth_enabled">Bluetooth ativado</string>
+   <string name="no_discoverability">Impossivel receber o contato.Visibilidade não está ativa.</string>
+   <string name="transfer_failed">Transmissão falhou</string>
+   <string name="menuitem_receive_contact">Receber um contato</string>
+</resources>
